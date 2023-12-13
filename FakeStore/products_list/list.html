@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>Fake Store - Products List</title>
+</head>
+
+<body onload="fetchProductsList(),loadEliminatedProducts()">
+    <header>
+        <nav class="navbar navbar-expand-sm sticky-top barranav">
+            <div class="container-fluid">
+                <a href="../indexAdmin.html">
+                    <img src="../images/logo.png" alt="" style="width: 100px; height: 100px">
+                </a>
+                <div class="apartados_index collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link links" href="../indexAdmin.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link links" href="../catalogue/catalogue.html">Catalogue</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link links" href="list.html">Products list</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="views_container">
+        <div id="register_products" class="col-lg-3">
+            <h3 class="titles">Register product</h3>
+            <form action="https://fakestoreapi.com/products" method="post" id="register_products_form">
+                <div class="mb-3 mt-3">
+                    <label for="id" class="form-label">ID: </label>
+                    <input type="text" class="form-control" placeholder="Enter ID" name="id" id="id">
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" class="form-control" placeholder="Enter title" name="title" id="title">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="price" class="form-label">Price:</label>
+                    <input type="number" class="form-control" placeholder="Enter price" name="price" id="price">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <input type="text" class="form-control" placeholder="Enter description" name="description"
+                        id="description">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="category" class="form-label">Category:</label>
+                    <input type="text" class="form-control" placeholder="Enter category" name="category" id="category">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image:</label>
+                    <input type="file" class="form-control" placeholder="Enter image" name="image" id="image">
+                </div>
+                <h3 for="username" class="form-label">Rating:</h3>
+                <div class="mb-3 mt-3">
+                    <label for="rate" class="form-label">Rate:</label>
+                    <input type="text" class="form-control" placeholder="Enter rate" name="rate" id="rate">
+                </div>
+                <div class="mb-3">
+                    <label for="count" class="form-label">Count:</label>
+                    <input type="text" class="form-control" placeholder="Enter count" name="count" id="count">
+                </div>
+                <button type="submit" class="btn button_submit" onclick="registerProduct()">Register product</button>
+            </form>
+        </div>
+
+        <div id="productListContainer" class="col-lg-9">
+
+        </div>
+    </div>
+    <div id="spinner" class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <div class="alert alert-success alert-dismissible" id="success">
+        <strong>Success!</strong> The product was created successfully!
+    </div>
+
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del formulario de edición -->
+                    <form id="editProductForm">
+                        <!-- Campos de edición del producto -->
+                        <div class="mb-3">
+                            <label for="editTitle" class="form-label">Title:</label>
+                            <input type="text" class="form-control" id="editTitle">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPrice" class="form-label">Price:</label>
+                            <input type="text" class="form-control" id="editPrice">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCategory" class="form-label">Category:</label>
+                            <input type="text" class="form-control" id="editCategory">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="editDescription">
+                        </div>
+                        <!--<div class="mb-3">
+                            <label for="editRate" class="form-label">Rate:</label>
+                            <input type="text" class="form-control" id="editRate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCount" class="form-label">Count:</label>
+                            <input type="text" class="form-control" id="editCount">
+                        </div>-->
+                        <!-- Agrega más campos según tus necesidades -->
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="list.js"></script>
+</body>
+
+</html>
