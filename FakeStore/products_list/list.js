@@ -1,6 +1,5 @@
 var productListContainer = document.getElementById("productListContainer");
 var spinner = document.getElementById("spinner");
-var successAlert = document.getElementById("success");
 var myModal = new bootstrap.Modal(document.getElementById('editProductModal'));
 
 function fetchProductsList() {
@@ -230,7 +229,7 @@ function registerProduct() {
     localStorage.setItem("createdProducts", JSON.stringify(createdProducts));
 
     createProductList(newProduct);
-    successAlert.style.display = "block";
+    showAlert('Success! The product was created successfully!')
 
 }
 
