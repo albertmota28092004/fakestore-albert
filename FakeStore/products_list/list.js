@@ -28,7 +28,6 @@ function fetchProductsList() {
         });
 }
 
-
 function createProductList(product) {
     let listCard = document.createElement("div");
     listCard.classList.add("list-card");
@@ -237,53 +236,87 @@ function showAlert(mensaje) {
     var alert = document.createElement('div');
     alert.classList.add('my-alert');
     alert.textContent = mensaje;
-  
+
     document.body.appendChild(alert);
-  
-    setTimeout(function() {
+
+    setTimeout(function () {
         alert.remove();
     }, 3000);
-  }
+}
 
-  let editingProductId;
+let editingProductId;
 
-  function fillEditForm(product) {
-      editingProductId = product.id;
-      document.getElementById("editTitle").value = product.title;
-      document.getElementById("editPrice").value = product.price;
-      document.getElementById("editDescription").value = product.description;
-      document.getElementById("editCategory").value = product.category;
-      /*document.getElementById("editRate").value = product.rating.rate;
-      document.getElementById("editCount").value = product.rating.count;*/
-  }
-  
-  document.getElementById("editProductForm").addEventListener("submit", function (event) {
+function fillEditForm(product) {
+    editingProductId = product.id;
+
+    let listCard = document.querySelector(`.list-card[data-product-id="${editingProductId}"]`);
+    
+    // Obtiene los valores almacenados o utiliza los originales
+    let editedTitle = listCard.dataset.editedTitle || product.title;
+    let editedPrice = listCard.dataset.editedPrice || product.price;
+    let editedCategory = listCard.dataset.editedCategory || product.category;
+    let editedDescription = listCard.dataset.editedDescription || product.description;
+    /*let editedRate = listCard.dataset.editedRate || product.rating.rate;
+    let editedCount = listCard.dataset.editedCount || product.rating.count;*/
+
+    // Manda los valores al formulario
+    document.getElementById("editTitle").value = editedTitle;
+    document.getElementById("editPrice").value = editedPrice;
+    document.getElementById("editCategory").value = editedCategory;
+    document.getElementById("editDescription").value = editedDescription;
+    /*document.getElementById("editRate").value = editedRate;
+    document.getElementById("editCount").value = editedCount;*/
+
+    myModal.show();
+}
+
+document.getElementById("editProductForm").addEventListener("submit", function (event) {
     event.preventDefault();
-    
-    let editedTitle = document.getElementById("editTitle").value;
-    let editedPrice = document.getElementById("editPrice").value;
-    let editedCategory = document.getElementById("editCategory").value;
-    let editedDescription = document.getElementById("editDescription").value;
-    /*let editedRate = document.getElementById("editRate").value;
-    let editedCount = document.getElementById("editCount").value;*/
 
-    let productCard = document.querySelector(`.list-card[data-product-id="${editingProductId}"]`);
+    // Actualiza los datos
+    let editedProduct = {
+        id: editingProductId,
+        title: document.getElementById("editTitle").value,
+        price: document.getElementById("editPrice").value,
+        category: document.getElementById("editCategory").value,
+        description: document.getElementById("editDescription").value,
+        /*rating: {
+            rate: document.getElementById("editRate").value,
+            count: document.getElementById("editCount").value
+        }*/
+    };
 
-    if (productCard) {
-        let titleElement = productCard.querySelector(".details-container p:nth-child(1)");
-        titleElement.textContent = editedTitle;
-        let priceElement = productCard.querySelector(".details-container p:nth-child(2)"); 
-        priceElement.textContent = `Price: ${editedPrice}`;
-        let categoryElement = productCard.querySelector(".details-container p:nth-child(3"); 
-        categoryElement.textContent = `Category: ${editedCategory}`;
-        let descriptionElement = productCard.querySelector(".details-container p:nth-child(4)"); 
-        descriptionElement.textContent = `Description: ${editedDescription}`;
-        /*let rateElement = productCard.querySelector(".details-container p:nth-child(5)"); 
-        rateElement.textContent = `Rate: ${editedRate}`;
-        let countElement = productCard.querySelector(".details-container p:nth-child(6)"); 
-        countElement.textContent = `Count: ${editedCount}`;*/
-    
-    }
+    updateProductInUI(editedProduct);
 
     myModal.hide();
+    showAlert('Product edited successfully!')
+
 });
+
+function updateProductInUI(editedProduct) {
+    let productCard = document.querySelector(`.list-card[data-product-id="${editedProduct.id}"]`);
+    
+    if (productCard) {
+        // Actualiza los elementos en la UI
+        let titleElement = productCard.querySelector(".details-container p:nth-child(1)");
+        titleElement.textContent = editedProduct.title;
+        let priceElement = productCard.querySelector(".details-container p:nth-child(2)");
+        priceElement.textContent = `Price: ${editedProduct.price}`;
+        let categoryElement = productCard.querySelector(".details-container p:nth-child(3)");
+        categoryElement.textContent = `Category: ${editedProduct.category}`;
+        let descriptionElement = productCard.querySelector(".details-container p:nth-child(4)");
+        descriptionElement.textContent = `Description: ${editedProduct.description}`;
+        /*let rateElement = productCard.querySelector(".details-container p:nth-child(5)");
+        rateElement.textContent = `Rate: ${editedProduct.rating.rate}`;
+        let countElement = productCard.querySelector(".details-container p:nth-child(6)");
+        countElement.textContent = `Count: ${editedProduct.rating.count}`;*/
+
+        // Almacena los datos editados en el elemento de la lista
+        productCard.dataset.editedTitle = editedProduct.title;
+        productCard.dataset.editedPrice = editedProduct.price;
+        productCard.dataset.editedCategory = editedProduct.category;
+        productCard.dataset.editedDescription = editedProduct.description;
+        /*productCard.dataset.editedRate = editedProduct.rating.rate;
+        productCard.dataset.editedCount = editedProduct.rating.count;*/
+    }
+}

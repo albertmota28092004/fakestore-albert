@@ -9,9 +9,6 @@ var productsInCart = [];
 let limit = 8;
 let offset = 1;
 
-/*    */
-
-
 previous.addEventListener("click", () => {
   if (offset != 1) {
     offset -= 9;
